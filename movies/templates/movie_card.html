@@ -1,0 +1,27 @@
+<a href="/watch/{{ movie.id }}/" class="movie-card accent-glow-hover d-block text-decoration-none">
+    <div class="movie-card-img-wrapper">
+        <img src="{% if movie.cover_image %}{{ movie.cover_image.url }}{% else %}https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=336&h=504&fit=crop{% endif %}" alt="{{ movie.title }}" class="movie-card-img" loading="lazy">
+        <!-- Hover Overlay -->
+        <div class="movie-card-overlay">
+            <div class="movie-play-btn">
+                <i data-lucide="play" style="width: 20px; height: 20px; fill: currentColor; margin-left: 2px;"></i>
+            </div>
+        </div>
+        <!-- Genre Badge -->
+        <span class="badge-genre">{{ movie.genre }}</span>
+        <!-- Rating Badge -->
+        <span class="badge-rating">
+            <i data-lucide="star" class="text-accent" style="width: 10px; height: 10px; fill: currentColor;"></i>
+            <span class="text-white">{{ movie.rating }}</span>
+        </span>
+        <div class="movie-card-gradient"></div>
+    </div>
+    <div class="px-3 pb-3 pt-2">
+        <p class="text-white font-rajdhani fw-semibold mb-1 text-truncate leading-snug" style="font-size: 13px;">
+            {{ movie.title }}
+        </p>
+        <p class="text-secondary font-mono mb-0" style="font-size: 11px;">
+            {{ movie.year }} · {{ movie.duration }}
+        </p>
+    </div>
+</a>

@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+{% if not is_searching and featured_movie %}
+<section class="hero-wrapper">
+    <!-- Backdrop Image -->
+    <img src="{% if featured_movie.cover_image %}{{ featured_movie.cover_image.url }}{% else %}https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&h=800&fit=crop&auto=format{% endif %}" alt="{{ featured_movie.title }} Backdrop" class="hero-backdrop">
+    <div class="hero-overlay-left"></div>
+    <div class="hero-overlay-bottom"></div>
+
+    <!-- Leaderboard Ad Slot in Hero -->
+    <div class="container relative z-10 pt-4 d-flex justify-content-center">
+        <div class="ad-slot-border w-100 max-w-[728px] py-3 text-center" style="max-width: 728px; height: 90px; border: none; background: transparent;">
+            <script>
+              atOptions = {
+                'key' : '220975c97cdb906e5069ec678484334d',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+              };
+            </script>
+            <script src="https://manhoodinvoluntaryplash.com/220975c97cdb906e5069ec678484334d/invoke.js"></script>
+        </div>
+    </div>
+
+    <!-- Featured Movie Details -->
+    <div class="container mt-auto mb-5 pb-5 relative z-10">
+        <div class="row align-items-end">
+            <div class="col-12 col-lg-8">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <span class="badge-genre-hero">{{ featured_movie.genre }}</span>
+                    <span class="text-secondary font-mono tracking-widest text-uppercase" style="font-size: 11px;">Free Streaming</span>
+                </div>
+
+                <h1 class="display-3 font-rajdhani fw-bold text-white leading-tight tracking-tight mb-3">
+                    {{ featured_movie.title }}
+                </h1>
+
+                <p class="text-secondary text-sm sm:text-base font-dm-sans mb-4 max-w-md opacity-75" style="max-width: 500px; line-height: 1.6;">
+                    {{ featured_movie.desc }}
+                </p>
+
+                <div class="d-flex align-items-center flex-wrap gap-4 mb-4 font-mono text-secondary" style="font-size: 11px;">
+                    <span class="d-flex align-items-center gap-1">
+                        <i data-lucide="star" class="text-accent" style="width: 13px; height: 13px; fill: currentColor;"></i>
+                        <span class="text-white">{{ featured_movie.rating }}</span>/10
+                    </span>
+                    <span>{{ featured_movie.year }}</span>
+                    <span>{{ featured_movie.duration }}</span>
+                    <span class="d-flex align-items-center gap-1">
+                        <i data-lucide="clock" style="width: 13px; height: 13px;"></i>
+                        {{ featured_movie.views }} views
+                    </span>
+                </div>
+
+                <div class="d-flex items-center gap-3 flex-wrap">
+                    <a href="/watch/{{ featured_movie.id }}/" class="btn btn-cyber-primary d-inline-flex align-items-center gap-3">
+                        <i data-lucide="play" style="width: 18px; height: 18px; fill: currentColor; margin-left: 2px;"></i>
+                        Watch Now (Free)
+                    </a>
+                    <button class="btn btn-cyber-secondary d-inline-flex align-items-center gap-2">
+                        <span>+ Watchlist</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<div class="container pt-5">
+
+    {% if is_searching %}
+    <!-- Search / Genre Filter Flat Grid -->
+    <section class="mb-5">
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <i data-lucide="search" class="text-accent" style="width: 18px; height: 18px;"></i>
+            <h2 class="h4 font-rajdhani fw-semibold text-white tracking-wide mb-0">
+                {% if request.GET.genre %}
+                    Category: {{ request.GET.genre }}
+                {% else %}
+                    Search Results
+                {% endif %}
+            </h2>
+            <div class="flex-grow-1 border-bottom border-secondary border-opacity-10 ms-3"></div>
+            <a href="/" class="text-accent text-decoration-none font-mono" style="font-size: 11px;">Clear Filter ×</a>
+        </div>
+        
+        {% if movies %}
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-4">
+            {% for movie in movies %}
+            <div class="col d-flex justify-content-center">
+                {% include 'movie_card.html' with movie=movie %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5 my-5">
+            <i data-lucide="alert-circle" class="text-secondary mb-3" style="width: 48px; height: 48px; opacity: 0.5;"></i>
+            <p class="text-secondary font-dm-sans mb-0">No movies found matching your criteria.</p>
+        </div>
+        {% endif %}
+    </section>
+    
+    {% else %}
+    
+    <!-- Regular Home Rows -->
+    <!-- Movie Category Row: Freshly Uploaded -->
+    {% if freshly_uploaded %}
+    <section class="mb-5">
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <i data-lucide="zap" class="text-accent" style="width: 18px; height: 18px;"></i>
+            <h2 class="h4 font-rajdhani fw-semibold text-white tracking-wide mb-0">Freshly Uploaded</h2>
+            <div class="flex-grow-1 border-bottom border-secondary border-opacity-10 ms-3"></div>
+            <a href="#" class="text-accent text-decoration-none font-mono" style="font-size: 11px;">See All →</a>
+        </div>
+        <div class="scroll-row no-scrollbar">
+            {% for movie in freshly_uploaded %}
+                {% include 'movie_card.html' with movie=movie %}
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Billboard Middle Ad Slot -->
+    <div class="my-5 d-flex justify-content-center">
+        <div class="ad-slot-border w-100 max-w-[970px] text-center d-flex justify-content-center align-items-center" style="max-width: 970px; height: 110px; border: none; background: transparent;">
+            <!-- Desktop Leaderboard -->
+            <div class="d-none d-md-block">
+                <script>
+                  atOptions = {
+                    'key' : '220975c97cdb906e5069ec678484334d',
+                    'format' : 'iframe',
+                    'height' : 90,
+                    'width' : 728,
+                    'params' : {}
+                  };
+                </script>
+                <script src="https://manhoodinvoluntaryplash.com/220975c97cdb906e5069ec678484334d/invoke.js"></script>
+            </div>
+            <!-- Mobile Banner -->
+            <div class="d-block d-md-none">
+                <script>
+                  atOptions = {
+                    'key' : '66a2846d0830b3bdd4cdb5fad50657d9',
+                    'format' : 'iframe',
+                    'height' : 50,
+                    'width' : 320,
+                    'params' : {}
+                  };
+                </script>
+                <script src="https://manhoodinvoluntaryplash.com/66a2846d0830b3bdd4cdb5fad50657d9/invoke.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <!-- Movie Category Row: Top Hidden Gems -->
+    {% if hidden_gems %}
+    <section class="mb-5">
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <i data-lucide="star" class="text-accent" style="width: 18px; height: 18px;"></i>
+            <h2 class="h4 font-rajdhani fw-semibold text-white tracking-wide mb-0">Top Hidden Gems</h2>
+            <div class="flex-grow-1 border-bottom border-secondary border-opacity-10 ms-3"></div>
+            <a href="#" class="text-accent text-decoration-none font-mono" style="font-size: 11px;">See All →</a>
+        </div>
+        <div class="scroll-row no-scrollbar">
+            {% for movie in hidden_gems %}
+                {% include 'movie_card.html' with movie=movie %}
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Movie Category Row: Trending Now -->
+    {% if trending_movies %}
+    <section class="mb-5">
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <i data-lucide="trending-up" class="text-accent" style="width: 18px; height: 18px;"></i>
+            <h2 class="h4 font-rajdhani fw-semibold text-white tracking-wide mb-0">Trending Now</h2>
+            <div class="flex-grow-1 border-bottom border-secondary border-opacity-10 ms-3"></div>
+            <a href="#" class="text-accent text-decoration-none font-mono" style="font-size: 11px;">See All →</a>
+        </div>
+        <div class="scroll-row no-scrollbar">
+            {% for movie in trending_movies %}
+                {% include 'movie_card.html' with movie=movie %}
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+    
+    {% endif %}
+
+    <!-- Stats & Why SabseChupke Row -->
+    <div class="row g-4 mb-5 pb-5 mt-2">
+        <div class="col-12 col-xl-8">
+            <div class="why-banner h-100">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="pulse-dot" style="width: 6px; height: 6px;"></span>
+                    <span class="font-mono text-accent text-uppercase tracking-wider" style="font-size: 11px; letter-spacing: 0.16em;">Why SabseChupke?</span>
+                </div>
+                <h3 class="font-rajdhani text-white fw-bold h3 mb-2 tracking-wide">Stream Without a Trace</h3>
+                <p class="text-secondary text-sm font-dm-sans leading-relaxed mb-4 opacity-75" style="max-width: 550px;">
+                    No sign-ups. No subscriptions. No surveillance. Just pure, unfiltered cinema delivered
+                    directly to your screen. SabseChupke keeps your viewing habits strictly between you
+                    and the movie.
+                </p>
+                <div class="row g-3 pt-2">
+                    <div class="col-6 col-sm-3">
+                        <p class="text-accent font-rajdhani fw-bold h4 mb-1">10,000+</p>
+                        <p class="text-secondary font-mono mb-0" style="font-size: 11px;">Movies</p>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <p class="text-accent font-rajdhani fw-bold h4 mb-1">4K Ultra</p>
+                        <p class="text-secondary font-mono mb-0" style="font-size: 11px;">Quality</p>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <p class="text-accent font-rajdhani fw-bold h4 mb-1">Zero</p>
+                        <p class="text-secondary font-mono mb-0" style="font-size: 11px;">Sign-up</p>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <p class="text-accent font-rajdhani fw-bold h4 mb-1">100%</p>
+                        <p class="text-secondary font-mono mb-0" style="font-size: 11px;">Free</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-xl-4 d-flex justify-content-center">
+            <div class="ad-slot-border w-100 h-100 py-5 text-center min-h-[250px]" style="min-height: 250px; max-width: 300px; border: none; background: transparent;">
+                <script>
+                  atOptions = {
+                    'key' : '4cff7171db3863874228b626c5752b87',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                  };
+                </script>
+                <script src="https://manhoodinvoluntaryplash.com/4cff7171db3863874228b626c5752b87/invoke.js"></script>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

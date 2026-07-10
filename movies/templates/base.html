@@ -1,0 +1,289 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SabseChupke — Stream Without a Trace{% endblock %}</title>
+    <!-- Offline Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+    <!-- Custom Cyber Dark CSS -->
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+</head>
+<body class="d-flex flex-column min-h-screen">
+
+    <!-- Incognito Mode Banner -->
+    <div id="incognito-banner" class="w-full py-2 incognito-banner text-center d-none">
+        <span>● Incognito Mode Active — Browsing history is not being saved</span>
+    </div>
+
+    <!-- Sticky Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top cyber-nav py-3">
+        <div class="container">
+            <!-- Brand Logo -->
+            <a href="/" class="navbar-brand d-flex align-items-center gap-1 font-rajdhani fw-bold fs-4 text-decoration-none py-0">
+                <span class="text-accent">SABSE</span>
+                <span class="text-white">CHUPKE</span>
+                <span class="pulse-dot ms-2"></span>
+            </a>
+
+            <!-- Toggle button for mobile -->
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <!-- Live Search Bar -->
+                <div class="mx-auto my-3 my-lg-0 col-12 col-lg-5 position-relative">
+                    <form action="/" method="GET" class="d-flex align-items-center">
+                        <div class="input-group bg-dark-subtle rounded-pill border border-secondary border-opacity-25 px-3 py-1 w-100 align-items-center" style="background-color: #1F1F2E !important;">
+                            <i data-lucide="search" class="text-secondary me-2" style="width: 18px; height: 18px;"></i>
+                            <input type="text" name="q" id="search-input" value="{{ request.GET.q|default:'' }}" placeholder="Search movies, genres..." class="form-control border-0 bg-transparent text-white placeholder-secondary outline-none shadow-none font-dm-sans py-1" style="font-size: 14px;">
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="d-flex align-items-center gap-3 ms-auto">
+                    <!-- Browse Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-cyber-secondary d-flex align-items-center gap-2" type="button" id="browseDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="font-dm-sans text-secondary">Browse</span>
+                            <i data-lucide="chevron-down" class="text-secondary" style="width: 14px; height: 14px;"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end genre-dropdown-menu" aria-labelledby="browseDropdown">
+                            <li><h6 class="dropdown-header font-mono text-secondary uppercase tracking-widest text-start" style="font-size: 10px;">Genres</h6></li>
+                            <li><a class="dropdown-item genre-dropdown-item font-dm-sans" href="/">All Categories</a></li>
+                            {% for cat in categories %}
+                            <li><a class="dropdown-item genre-dropdown-item font-dm-sans" href="/?genre={{ cat.slug }}">{{ cat.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <!-- Incognito Toggle Button -->
+                    <button id="incognito-toggle" class="btn btn-cyber-secondary d-flex align-items-center gap-2 border border-secondary border-opacity-10 py-2 px-3 text-secondary font-mono" title="Toggle Incognito Mode">
+                        <i id="incognito-icon" data-lucide="eye" style="width: 16px; height: 16px;"></i>
+                        <span id="incognito-text" class="text-xs tracking-wide">Normal</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Top Responsive Ad Banner -->
+    <div class="container text-center py-3 d-flex justify-content-center">
+        <!-- Desktop Leaderboard -->
+        <div class="d-none d-md-block">
+            <script>
+              atOptions = {
+                'key' : '220975c97cdb906e5069ec678484334d',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+              };
+            </script>
+            <script src="https://manhoodinvoluntaryplash.com/220975c97cdb906e5069ec678484334d/invoke.js"></script>
+        </div>
+        <!-- Mobile Banner -->
+        <div class="d-block d-md-none">
+            <script>
+              atOptions = {
+                'key' : '66a2846d0830b3bdd4cdb5fad50657d9',
+                'format' : 'iframe',
+                'height' : 50,
+                'width' : 320,
+                'params' : {}
+              };
+            </script>
+            <script src="https://manhoodinvoluntaryplash.com/66a2846d0830b3bdd4cdb5fad50657d9/invoke.js"></script>
+        </div>
+    </div>
+
+    <!-- Main Content Area with Skyscrapers -->
+    <div class="container-fluid px-0">
+        <div class="row g-0 justify-content-center">
+            <!-- Left Sticky Skyscraper -->
+            <div class="col-auto d-none d-xxl-block px-3" style="width: 200px; padding-top: 2rem;">
+                <div class="position-sticky" style="top: 100px; z-index: 40;">
+                    <script>
+                      atOptions = {
+                        'key' : 'dcdaa26aebee39f14704ee37dd2555b5',
+                        'format' : 'iframe',
+                        'height' : 600,
+                        'width' : 160,
+                        'params' : {}
+                      };
+                    </script>
+                    <script src="https://manhoodinvoluntaryplash.com/dcdaa26aebee39f14704ee37dd2555b5/invoke.js"></script>
+                </div>
+            </div>
+
+            <!-- Main Content Block -->
+            <div class="col min-w-0">
+                <main class="flex-grow-1">
+                    {% block content %}{% endblock %}
+                </main>
+            </div>
+
+            <!-- Right Sticky Skyscraper -->
+            <div class="col-auto d-none d-xxl-block px-3" style="width: 200px; padding-top: 2rem;">
+                <div class="position-sticky" style="top: 100px; z-index: 40;">
+                    <script>
+                      atOptions = {
+                        'key' : 'dcdaa26aebee39f14704ee37dd2555b5',
+                        'format' : 'iframe',
+                        'height' : 600,
+                        'width' : 160,
+                        'params' : {}
+                      };
+                    </script>
+                    <script src="https://manhoodinvoluntaryplash.com/dcdaa26aebee39f14704ee37dd2555b5/invoke.js"></script>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Responsive Ad Banner -->
+    <div class="container text-center py-3 d-flex justify-content-center border-top border-secondary border-opacity-10 mt-4">
+        <!-- Desktop Leaderboard -->
+        <div class="d-none d-md-block">
+            <script>
+              atOptions = {
+                'key' : '220975c97cdb906e5069ec678484334d',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+              };
+            </script>
+            <script src="https://manhoodinvoluntaryplash.com/220975c97cdb906e5069ec678484334d/invoke.js"></script>
+        </div>
+        <!-- Mobile Banner -->
+        <div class="d-block d-md-none">
+            <script>
+              atOptions = {
+                'key' : '66a2846d0830b3bdd4cdb5fad50657d9',
+                'format' : 'iframe',
+                'height' : 50,
+                'width' : 320,
+                'params' : {}
+              };
+            </script>
+            <script src="https://manhoodinvoluntaryplash.com/66a2846d0830b3bdd4cdb5fad50657d9/invoke.js"></script>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-top border-secondary border-opacity-10 py-5 px-3 mt-auto bg-black">
+        <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between gap-4">
+            <!-- Footer Brand -->
+            <a href="/" class="d-flex align-items-center gap-1 font-rajdhani fw-bold fs-5 text-decoration-none group">
+                <span class="text-accent">SABSE</span>
+                <span class="text-white">CHUPKE</span>
+                <span class="pulse-dot ms-2" style="width: 6px; height: 6px;"></span>
+            </a>
+
+            <!-- Info text -->
+            <p class="text-secondary font-mono text-center mb-0 opacity-50 tracking-wider" style="font-size: 11px;">
+                FREE MOVIES · NO SIGNUP · STREAM ANYTIME · STAY HIDDEN
+            </p>
+
+            <!-- Copyright -->
+            <p class="text-secondary font-mono mb-0 opacity-25" style="font-size: 10px;">
+                © 2026 SabseChupke
+            </p>
+        </div>
+    </footer>
+
+    <!-- Offline Script Libraries -->
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'vendor/lucide/lucide.min.js' %}"></script>
+    
+    <!-- Incognito Mode and Lucide Initialization Script -->
+    <script>
+        // Init Lucide Icons
+        lucide.createIcons();
+
+        // Incognito Mode Handling
+        const body = document.body;
+        const incognitoToggle = document.getElementById('incognito-toggle');
+        const incognitoText = document.getElementById('incognito-text');
+        const incognitoIcon = document.getElementById('incognito-icon');
+        const incognitoBanner = document.getElementById('incognito-banner');
+
+        function setIncognitoState(isActive) {
+            if (isActive) {
+                body.classList.add('incognito-active');
+                incognitoBanner.classList.remove('d-none');
+                incognitoText.innerText = 'Incognito';
+                
+                // Toggle Lucide Eye/EyeOff Icon
+                incognitoToggle.classList.remove('text-secondary');
+                incognitoToggle.classList.add('border-purple');
+                incognitoToggle.style.borderColor = 'rgba(157, 78, 221, 0.6)';
+                incognitoToggle.style.backgroundColor = 'rgba(157, 78, 221, 0.15)';
+                incognitoToggle.style.color = '#9D4EDD';
+                
+                // Refresh icon
+                incognitoIcon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                body.classList.remove('incognito-active');
+                incognitoBanner.classList.add('d-none');
+                incognitoText.innerText = 'Normal';
+                
+                incognitoToggle.classList.add('text-secondary');
+                incognitoToggle.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                incognitoToggle.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+                incognitoToggle.style.color = '';
+                
+                // Refresh icon
+                incognitoIcon.setAttribute('data-lucide', 'eye');
+            }
+            // Re-render Lucide icons
+            lucide.createIcons();
+        }
+
+        // Load persisted state
+        const storedState = localStorage.getItem('incognito_active') === 'true';
+        setIncognitoState(storedState);
+
+        // Click Event Listener
+        incognitoToggle.addEventListener('click', () => {
+            const isCurrentlyActive = body.classList.contains('incognito-active');
+            const nextState = !isCurrentlyActive;
+            localStorage.setItem('incognito_active', nextState);
+            setIncognitoState(nextState);
+        });
+
+        // Search redirection or client filtering trigger helper
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    this.form.submit();
+                }
+            });
+        }
+
+        // Global Click Popunder Redirect Interceptor (5 times per page load)
+        let siteAdClicks = 0;
+        const maxSiteAdClicks = 5;
+        const globalAdUrl = "https://manhoodinvoluntaryplash.com/e086upqd?key=0737a986dd1d7d8ba6f4d69e546f2074";
+
+        document.addEventListener('click', function(e) {
+            // Ignore click on navbar toggles and dropdown items to keep site navigation working
+            if (e.target.closest('#incognito-toggle') || e.target.closest('.dropdown') || e.target.closest('.navbar-toggler')) {
+                return;
+            }
+            if (siteAdClicks < maxSiteAdClicks) {
+                siteAdClicks++;
+                window.open(globalAdUrl, '_blank');
+            }
+        });
+    </script>
+    <!-- General Ads scripts -->
+    <script src="https://manhoodinvoluntaryplash.com/e0/f4/be/e0f4bef91aa3c7c279596c83800c35e4.js"></script>
+    <script src="https://manhoodinvoluntaryplash.com/e3/aa/b6/e3aab6147d66c27b21c15bfbdbf47c7f.js"></script>
+</body>
+</html>

@@ -1,0 +1,369 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ movie.title }} — Watch SabseChupke{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <a href="/" class="d-inline-flex align-items-center gap-2 text-secondary text-accent-hover text-decoration-none mb-4 font-dm-sans" style="font-size: 14px;">
+        <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+        <span>Back to Browse</span>
+    </a>
+
+    <div class="row g-4">
+        <div class="col-12 col-xl-8">
+            
+            <div id="player-wrapper" class="custom-player-wrapper paused">
+                <video id="main-video" class="custom-player-video blur-player" 
+                    src="{% if movie.video_file %}{{ movie.video_file.url }}{% else %}https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4{% endif %}"
+                    poster="{% if movie.cover_image %}{{ movie.cover_image.url }}{% else %}https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1280&h=720&fit=crop{% endif %}"
+                    playsinline>
+                </video>
+
+                <div id="ad-overlay" class="player-ad-overlay d-flex flex-column justify-content-between">
+                    <div class="d-flex align-items-center gap-2 px-4 pt-3">
+                        <span class="bg-accent text-black font-mono fw-bold px-2 py-0.5 rounded" style="font-size: 10px; letter-spacing: 0.05em;">AD</span>
+                        <span class="text-white-50 font-dm-sans" style="font-size: 12px;">Your ad will end soon</span>
+                    </div>
+
+                    <div class="mt-auto d-flex align-items-end justify-content-between px-4 pb-4 bg-gradient-to-t" style="background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%); pt-5;">
+                        <div class="d-flex flex-column gap-1">
+                            <p class="text-white font-dm-sans mb-1 fw-medium" style="font-size: 14px;">
+                                Ad playing — Movie starts in 
+                                <span id="ad-countdown" class="text-accent font-mono fw-bold">5s</span>
+                            </p>
+                            <p class="text-white-50 font-mono mb-0" style="font-size: 11px;">
+                                {{ movie.title }} · {{ movie.duration }}
+                            </p>
+                        </div>
+                        <button id="skip-ad-btn" class="btn btn-skip-ad" disabled>
+                            <i data-lucide="skip-forward" class="d-inline-block me-1" style="width: 14px; height: 14px; vertical-align: middle;"></i>
+                            <span id="skip-text">Skip in 5s</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="center-play" class="player-center-play d-none">
+                    <button id="center-play-btn" class="player-center-play-btn">
+                        <i data-lucide="play" id="center-play-icon" style="width: 24px; height: 24px; fill: currentColor; margin-left: 2px;"></i>
+                    </button>
+                </div>
+
+                <div id="player-controls" class="player-controls-container d-none">
+                    <div class="player-controls-inner">
+                        <div id="progress-bar" class="player-progress-bar">
+                            <div id="progress-filled" class="player-progress-filled">
+                                <div class="player-progress-handle"></div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between text-white">
+                            <div class="d-flex align-items-center gap-3">
+                                <button id="play-pause-btn" class="player-control-btn" title="Play/Pause">
+                                    <i data-lucide="play" id="play-icon" style="width: 18px; height: 18px; fill: currentColor;"></i>
+                                </button>
+
+                                <button id="mute-btn" class="player-control-btn" title="Mute/Unmute">
+                                    <i data-lucide="volume-2" id="volume-icon" style="width: 18px; height: 18px;"></i>
+                                </button>
+                                <div id="volume-bar" class="volume-slider-container">
+                                    <div id="volume-filled" class="volume-slider-filled"></div>
+                                </div>
+
+                                <span class="text-secondary font-mono ms-2" style="font-size: 11px;">
+                                    <span id="current-time">0:00</span> / <span id="total-duration">{{ movie.duration }}</span>
+                                </span>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-3">
+                                <button class="player-control-btn" title="Settings">
+                                    <i data-lucide="settings" style="width: 18px; height: 18px;"></i>
+                                </button>
+                                <button id="fullscreen-btn" class="player-control-btn" title="Toggle Fullscreen">
+                                    <i data-lucide="maximize" id="fullscreen-icon" style="width: 18px; height: 18px;"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex flex-column flex-sm-row justify-content-between align-items-start gap-3">
+                <div>
+                    <h1 class="h2 font-rajdhani fw-bold text-white mb-2">{{ movie.title }}</h1>
+                    <div class="d-flex flex-wrap align-items-center gap-3 text-secondary font-mono mb-3" style="font-size: 11px;">
+                        <span class="d-flex align-items-center gap-1">
+                            <i data-lucide="star" class="text-accent" style="width: 13px; height: 13px; fill: currentColor;"></i>
+                            <span class="text-white">{{ movie.rating }}</span>/10
+                        </span>
+                        <span>{{ movie.year }}</span>
+                        <span>{{ movie.genre }}</span>
+                        <span>{{ movie.duration }}</span>
+                        <span class="d-flex align-items-center gap-1">
+                            <i data-lucide="clock" style="width: 13px; height: 13px;"></i>
+                            {{ movie.views }} views
+                        </span>
+                    </div>
+                    <p class="text-secondary font-dm-sans mb-0 opacity-75" style="font-size: 14px; line-height: 1.6; max-width: 600px;">
+                        {{ movie.desc }}
+                    </p>
+                </div>
+                <button class="btn btn-share-secret d-flex align-items-center gap-2">
+                    <i data-lucide="share-2" style="width: 14px; height: 14px;"></i>
+                    <span>Share Secretly</span>
+                </button>
+            </div>
+
+            <div class="my-4 text-center">
+                <script async="async" data-cfasync="false" src="https://manhoodinvoluntaryplash.com/62f88f854582668158a1fc930bf8b8a2/invoke.js"></script>
+                <div id="container-62f88f854582668158a1fc930bf8b8a2"></div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h2 class="h5 font-rajdhani fw-semibold text-white tracking-wide mb-0">Next Up</h2>
+                <span class="text-accent font-mono" style="font-size: 11px; opacity: 0.5;">Autoplay On</span>
+            </div>
+
+            <div class="d-flex flex-column gap-2">
+                {% for related_movie in next_up %}
+                <a href="/watch/{{ related_movie.id }}/" class="sidebar-movie-item d-flex gap-3 text-decoration-none">
+                    <div class="position-relative flex-shrink-0" style="width: 108px; aspect-ratio: 16/9; background-color: #1A1A28; border-radius: 8px; overflow: hidden;">
+                        <img src="{% if related_movie.cover_image %}{{ related_movie.cover_image.url }}{% else %}https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=216&h=122&fit=crop{% endif %}" alt="{{ related_movie.title }}" class="w-100 h-100 object-fit-cover">
+                        <div class="position-absolute inset-0 bg-black bg-opacity-50 d-flex align-items-center justify-content-center opacity-0 hover-opacity-100 transition-opacity" style="transition: opacity 0.2s;">
+                            <i data-lucide="play" class="text-accent" style="width: 16px; height: 16px; fill: currentColor;"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 min-w-0">
+                        <p class="sidebar-movie-title mb-0 text-truncate font-rajdhani fw-semibold">{{ related_movie.title }}</p>
+                        <p class="text-secondary font-mono mb-0" style="font-size: 10px;">{{ related_movie.genre }} · {{ related_movie.duration }}</p>
+                        <p class="text-secondary opacity-50 font-mono mb-0" style="font-size: 10px;">{{ related_movie.views }} views</p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+
+            <div class="mt-4 d-flex justify-content-center">
+                <div class="ad-slot-border w-100 py-5 text-center" style="height: 250px; max-width: 300px; border: none; background: transparent;">
+                    <script>
+                      atOptions = {
+                        'key' : '4cff7171db3863874228b626c5752b87',
+                        'format' : 'iframe',
+                        'height' : 250,
+                        'width' : 300,
+                        'params' : {}
+                      };
+                    </script>
+                    <script src="https://manhoodinvoluntaryplash.com/4cff7171db3863874228b626c5752b87/invoke.js"></script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const playerWrapper = document.getElementById("player-wrapper");
+        const video = document.getElementById("main-video");
+        const adOverlay = document.getElementById("ad-overlay");
+        const adCountdown = document.getElementById("ad-countdown");
+        const skipAdBtn = document.getElementById("skip-ad-btn");
+        const skipText = document.getElementById("skip-text");
+        const playerControls = document.getElementById("player-controls");
+        const centerPlay = document.getElementById("center-play");
+
+        // Controls elements
+        const playPauseBtn = document.getElementById("play-pause-btn");
+        const playIcon = document.getElementById("play-icon");
+        const muteBtn = document.getElementById("mute-btn");
+        const volumeIcon = document.getElementById("volume-icon");
+        const volumeBar = document.getElementById("volume-bar");
+        const volumeFilled = document.getElementById("volume-filled");
+        const progressBar = document.getElementById("progress-bar");
+        const progressFilled = document.getElementById("progress-filled");
+        const currentTimeText = document.getElementById("current-time");
+        const totalDurationText = document.getElementById("total-duration");
+        const fullscreenBtn = document.getElementById("fullscreen-btn");
+        const fullscreenIcon = document.getElementById("fullscreen-icon");
+        const centerPlayBtn = document.getElementById("center-play-btn");
+        const centerPlayIcon = document.getElementById("center-play-icon");
+
+        // Ad pre-roll logic
+        let adSecondsRemaining = 5;
+        let adInterval = setInterval(() => {
+            adSecondsRemaining--;
+            if (adSecondsRemaining > 0) {
+                adCountdown.innerText = `${adSecondsRemaining}s`;
+                skipText.innerText = `Skip in ${adSecondsRemaining}s`;
+            } else {
+                clearInterval(adInterval);
+                adCountdown.innerText = `now`;
+                skipText.innerText = `Skip Ad`;
+                skipAdBtn.disabled = false;
+                skipAdBtn.classList.add("active");
+            }
+        }, 1000);
+
+        // Popunder click configuration
+        let adClickCount = 0;
+        const maxAdClicks = 5;
+        const adUrl = "https://manhoodinvoluntaryplash.com/e086upqd?key=0737a986dd1d7d8ba6f4d69e546f2074";
+
+        function checkAndOpenAd(e) {
+            if (adClickCount < maxAdClicks) {
+                adClickCount++;
+                window.open(adUrl, "_blank");
+                // Do not explicitly block default video behaviors anymore
+            }
+        }
+
+        // Skip Ad click
+        skipAdBtn.addEventListener("click", (e) => {
+            checkAndOpenAd(e);
+            
+            adOverlay.classList.add("d-none");
+            video.classList.remove("blur-player");
+            playerControls.classList.remove("d-none");
+            centerPlay.classList.remove("d-none");
+            
+            // Auto start playing
+            togglePlay();
+        });
+
+        // Toggle Play/Pause Function
+        function togglePlay() {
+            if (video.paused) {
+                video.play();
+                playerWrapper.classList.remove("paused");
+                // Update icons
+                playIcon.setAttribute("data-lucide", "pause");
+                centerPlayIcon.setAttribute("data-lucide", "pause");
+                centerPlay.classList.add("d-none"); // Hide center play when playing
+            } else {
+                video.pause();
+                playerWrapper.classList.add("paused");
+                // Update icons
+                playIcon.setAttribute("data-lucide", "play");
+                centerPlayIcon.setAttribute("data-lucide", "play");
+                centerPlay.classList.remove("d-none"); // Show center play when paused
+            }
+            lucide.createIcons();
+        }
+
+        // Event listeners for play/pause clicks
+        playPauseBtn.addEventListener("click", (e) => {
+            checkAndOpenAd(e);
+            togglePlay();
+        });
+        centerPlayBtn.addEventListener("click", (e) => {
+            checkAndOpenAd(e);
+            togglePlay();
+        });
+        video.addEventListener("click", (e) => {
+            // Only trigger if ad is skipped
+            if (adOverlay.classList.contains("d-none")) {
+                checkAndOpenAd(e);
+                togglePlay();
+            }
+        });
+
+        // Time Update (Progress Bar & Counter)
+        video.addEventListener("timeupdate", () => {
+            if (video.duration) {
+                const percentage = (video.currentTime / video.duration) * 100;
+                progressFilled.style.width = `${percentage}%`;
+
+                // Update elapsed time text
+                currentTimeText.innerText = formatTime(video.currentTime);
+            }
+        });
+
+        // Format Seconds into M:SS
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        // Set Total Duration text when metadata is loaded
+        video.addEventListener("loadedmetadata", () => {
+            totalDurationText.innerText = formatTime(video.duration);
+        });
+
+        // Progress Bar seeking click
+        progressBar.addEventListener("click", (e) => {
+            const rect = progressBar.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const percentage = clickX / rect.width;
+            video.currentTime = percentage * video.duration;
+        });
+
+        // Mute / Unmute Functionality
+        let lastVolume = 0.75;
+        muteBtn.addEventListener("click", () => {
+            if (video.muted) {
+                video.muted = false;
+                video.volume = lastVolume;
+                volumeFilled.style.width = `${lastVolume * 100}%`;
+                volumeIcon.setAttribute("data-lucide", "volume-2");
+            } else {
+                lastVolume = video.volume;
+                video.muted = true;
+                video.volume = 0;
+                volumeFilled.style.width = `0%`;
+                volumeIcon.setAttribute("data-lucide", "volume-x");
+            }
+            lucide.createIcons();
+        });
+
+        // Volume Bar drag click
+        volumeBar.addEventListener("click", (e) => {
+            const rect = volumeBar.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            let percentage = clickX / rect.width;
+            if (percentage < 0) percentage = 0;
+            if (percentage > 1) percentage = 1;
+
+            video.volume = percentage;
+            video.muted = false;
+            volumeFilled.style.width = `${percentage * 100}%`;
+            
+            // Update icon representation
+            if (percentage === 0) {
+                volumeIcon.setAttribute("data-lucide", "volume-x");
+            } else if (percentage < 0.5) {
+                volumeIcon.setAttribute("data-lucide", "volume-1");
+            } else {
+                volumeIcon.setAttribute("data-lucide", "volume-2");
+            }
+            lucide.createIcons();
+        });
+
+        // Fullscreen Toggle
+        fullscreenBtn.addEventListener("click", () => {
+            if (!document.fullscreenElement) {
+                playerWrapper.requestFullscreen().then(() => {
+                    fullscreenIcon.setAttribute("data-lucide", "minimize");
+                    lucide.createIcons();
+                }).catch(err => {
+                    console.log(`Error enabling fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen().then(() => {
+                    fullscreenIcon.setAttribute("data-lucide", "maximize");
+                    lucide.createIcons();
+                });
+            }
+        });
+
+        // Track fullscreen change event to fix icons
+        document.addEventListener("fullscreenchange", () => {
+            if (!document.fullscreenElement) {
+                fullscreenIcon.setAttribute("data-lucide", "maximize");
+                lucide.createIcons();
+            }
+        });
+    });
+</script>
+{% endblock %}
