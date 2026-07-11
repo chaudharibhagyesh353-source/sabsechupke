@@ -202,3 +202,5 @@ else:
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+WHITENOISE_MANIFEST_STRICT = False
