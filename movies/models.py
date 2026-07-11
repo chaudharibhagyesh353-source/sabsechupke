@@ -25,8 +25,11 @@ class Movie(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='movies')
     duration = models.CharField(max_length=50)  # e.g., "2h 18m"
     desc = models.TextField()
-    cover_image = models.ImageField(upload_to='covers/', blank=True, null=True)
-    video_file = models.FileField(upload_to='videos/', blank=True, null=True)
+    
+    # यह दोनों फील्ड्स अब ऑटोमैटिक रूप से आपके Supabase Storage में फाइलें सेव करेंगी
+    cover_image = models.ImageField(upload_to='covers/', blank=True, null=True, help_text="यह इमेज सीधे Supabase Storage में जाएगी")
+    video_file = models.FileField(upload_to='videos/', blank=True, null=True, help_text="अपनी .mp4 वीडियो फाइल यहाँ अपलोड करें (Supabase Storage)")
+    
     is_featured = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 

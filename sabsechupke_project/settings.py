@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'movies',
+    'storages',  # Required for Supabase S3 file uploads
 ]
 
 MIDDLEWARE = [
@@ -155,10 +156,49 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = '/media/'
+
+# ==============================================================================
+# MEDIA STORAGE CONFIGURATION
+# ==============================================================================
+
+# Dynamic storage selection: Use cloud storage only on Render, fallback to local files on your MacBook
+if os.environ.get('RENDER') == 'True':
+    SUPABASE_BUCKET_NAME = os.environ.get('SUPABASE_BUCKET_NAME', 'movies')
+    SUPABASE_PROJECT_URL = os.environ.get('SUPABASE_PROJECT_URL', 'https://your-project-id.supabase.co')
+    
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "access_key": os.environ.get("SUPABASE_ACCESS_KEY_ID"),
+                "secret_key": os.environ.get("SUPABASE_SECRET_ACCESS_KEY"),
+                "bucket_name": SUPABASE_BUCKET_NAME,
+                "endpoint_url": os.environ.get("SUPABASE_ENDPOINT_URL", f"{SUPABASE_PROJECT_URL}/storage/v1/s3"),
+                "region_name": "us-east-1",
+                "default_acl": "public-read",
+                "querystring_auth": False,
+            },
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+    # Redirect all media file requests to the Supabase Public Bucket URL
+    MEDIA_URL = f"{SUPABASE_PROJECT_URL}/storage/v1/object/public/{SUPABASE_BUCKET_NAME}/"
+else:
+    # Local MacBook Testing: Bypass all S3 connection rules completely to prevent NoSuchBucket crashes
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+    MEDIA_URL = '/media/'
+
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
