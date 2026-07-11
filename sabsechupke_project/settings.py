@@ -182,7 +182,8 @@ if os.environ.get('RENDER') == 'True':
             },
         },
         "staticfiles": {
-            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+            # UPDATED: Removed 'Manifest' to fix MissingFileError (.map files)
+            "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
         },
     }
     # Redirect all media file requests to the Supabase Public Bucket URL
@@ -194,7 +195,8 @@ else:
             "BACKEND": "django.core.files.storage.FileSystemStorage",
         },
         "staticfiles": {
-            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+            # UPDATED: Removed 'Manifest' to fix MissingFileError (.map files)
+            "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
         },
     }
     MEDIA_URL = '/media/'
