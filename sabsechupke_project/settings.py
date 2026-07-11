@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 import os
+import dj_database_url
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -38,8 +39,16 @@ load_env()
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-+3u3=a#a^zdz*4r-7kf95bukh#932*fd26gf^wwo9xjgbl1+gq')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = ['*']
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
+
+# Securely host on Render while keeping local testing fully open
+if os.environ.get('RENDER') == 'True':
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+    RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+    if RENDER_EXTERNAL_HOSTNAME:
+        ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+else:
+    ALLOWED_HOSTS = ['*']
 
 
 
@@ -89,13 +98,23 @@ WSGI_APPLICATION = 'sabsechupke_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': dj_database_url.config(
-        # Fall back to local SQLite if DATABASE_URL environment variable isn't set
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600
-    )
-}
+# Check if running live on Render to completely avoid local .env string parsing errors
+if os.environ.get('RENDER') == 'True':
+    # Production: Use Supabase/PostgreSQL via dj_database_url
+    DATABASES = {
+        'default': dj_database_url.config(
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
+else:
+    # Local Development: Safely force standard SQLite dictionary bypass
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
