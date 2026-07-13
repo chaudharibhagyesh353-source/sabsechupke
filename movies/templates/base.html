@@ -266,14 +266,14 @@
             });
         }
 
-        // Global Click Popunder Redirect Interceptor (5 times per page load)
+        // Global Click Popunder Redirect Interceptor
         let siteAdClicks = 0;
-        const maxSiteAdClicks = 5;
+        const maxSiteAdClicks = 2; // RECOMMENDED: Changed to 2 to improve User Experience
         const globalAdUrl = "https://manhoodinvoluntaryplash.com/xj4mf183yj?key=dde6a977447664bc94b797aaac7abe08";
 
         document.addEventListener('click', function(e) {
-            // Ignore click on navbar toggles and dropdown items to keep site navigation working
-            if (e.target.closest('#incognito-toggle') || e.target.closest('.dropdown') || e.target.closest('.navbar-toggler')) {
+            // Ignore click on navbar toggles, dropdown items, and the search bar
+            if (e.target.closest('#incognito-toggle') || e.target.closest('.dropdown') || e.target.closest('.navbar-toggler') || e.target.closest('#search-input')) {
                 return;
             }
             if (siteAdClicks < maxSiteAdClicks) {
