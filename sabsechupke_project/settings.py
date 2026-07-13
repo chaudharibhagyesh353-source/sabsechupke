@@ -47,6 +47,15 @@ if os.environ.get('RENDER') == 'True':
     RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
     if RENDER_EXTERNAL_HOSTNAME:
         ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+        # Fixes Admin Login loop: Explicitly trust the Render domain for secure CSRF operations
+        CSRF_TRUSTED_ORIGINS = [f'https://{RENDER_EXTERNAL_HOSTNAME}']
+    
+    # Tell Django to trust Render's HTTPS reverse proxy headers
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    
+    # Secure session cookies over the proxy
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 else:
     ALLOWED_HOSTS = ['*']
 
