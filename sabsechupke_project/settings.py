@@ -43,12 +43,12 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 # Securely host on Render while keeping local testing fully open
 if os.environ.get('RENDER') == 'True':
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+    ALLOWED_HOSTS = ['sabsechupke.onrender.com', 'localhost', '127.0.0.1', '*']
     RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
     if RENDER_EXTERNAL_HOSTNAME:
         ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
         # Fixes Admin Login loop: Explicitly trust the Render domain for secure CSRF operations
-        CSRF_TRUSTED_ORIGINS = [f'https://{RENDER_EXTERNAL_HOSTNAME}']
+        CSRF_TRUSTED_ORIGINS = ['https://sabsechupke.onrender.com']
     
     # Tell Django to trust Render's HTTPS reverse proxy headers
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
