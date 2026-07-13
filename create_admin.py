@@ -14,12 +14,20 @@ def create_superuser():
         email = 'bhagyesh@gmail.com'
         password = 'Bh@gye$h353'
         
-        if not User.objects.filter(username=username).exists():
-            print(f"User '{username}' not found. Attempting creation...")
-            User.objects.create_superuser(username=username, email=email, password=password)
-            print("Superuser created successfully.")
+        # Yeh line user ko dhundhegi ya naya banayegi
+        user, created = User.objects.get_or_create(username=username, defaults={'email': email})
+        
+        # Yeh line FORCEFULLY password set karegi, chahe user purana ho ya naya
+        user.set_password(password)
+        user.is_superuser = True
+        user.is_staff = True
+        user.save()
+        
+        if created:
+            print(f"Superuser '{username}' created successfully!")
         else:
-            print(f"Superuser '{username}' already exists in the database.")
+            print(f"Superuser '{username}' already existed. Password FORCEFULLY reset to new password!")
+            
     except Exception as e:
         print(f"Error occurred during superuser creation: {e}")
 
