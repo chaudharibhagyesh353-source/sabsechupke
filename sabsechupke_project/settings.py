@@ -27,7 +27,10 @@ def load_env():
                     k, v = line.strip().split('=', 1)
                     if (v.startswith('"') and v.endswith('"')) or (v.startswith("'") and v.endswith("'")):
                         v = v[1:-1]
-                    os.environ[k.strip()] = v.strip()
+                    
+                    # FIX: Sirf tabhi set karo jab variable pehle se maujood NA ho
+                    if k.strip() not in os.environ:
+                        os.environ[k.strip()] = v.strip()
 
 load_env()
 
