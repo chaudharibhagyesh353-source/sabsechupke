@@ -191,6 +191,8 @@ if os.environ.get('RENDER') == 'True':
                 "region_name": "us-east-1",
                 "default_acl": "public-read",
                 "querystring_auth": False,
+
+                "custom_domain": f"kaibowkvdyciwynnjtry.supabase.co/storage/v1/object/public/{SUPABASE_BUCKET_NAME}",
             },
         },
         "staticfiles": {
